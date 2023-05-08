@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -11,8 +12,10 @@
         android:text="TextView" />
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/ques_start_num_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:errorEnabled="true"
         android:hint="题目起始行号（如：2）">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -26,8 +29,10 @@
 
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/ques_title_loc_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:errorEnabled="true"
         android:hint="题目所在列号（如：A）">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -41,8 +46,10 @@
 
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/ques_option_loc_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:errorEnabled="true"
         android:hint="选项所在列号（如：B-E或B,C,E-F）">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -73,6 +80,8 @@
             android:layout_height="wrap_content"
             android:text="有选项位于一列中？" />
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/ques_option_split_layout"
+            app:errorEnabled="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="选项的分隔符（如：|）">
@@ -89,6 +98,8 @@
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/ques_ans_loc_layout"
+        app:errorEnabled="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="答案所在列号（如：F）-自动去除答案内非A-Z字母">
@@ -104,6 +115,8 @@
 
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/ques_ans_replace_layout"
+        app:errorEnabled="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="答案字符替换-键值对格式(json)-要求判断题答案为Y或N">
@@ -120,6 +133,8 @@
 
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/ques_explain_loc_layout"
+        app:errorEnabled="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="解析所在列号（如：F）">
@@ -139,7 +154,7 @@
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="预览前三题的解析效果" />
+        android:text="预览解析效果" />
 
 
 </LinearLayout>
