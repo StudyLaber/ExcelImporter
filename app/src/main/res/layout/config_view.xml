@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/sheetName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="题目起始行号（如：2）">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ques_start_num"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:clickable="false"
+            android:longClickable="false"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="题目所在列号（如：A）">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ques_title_loc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:clickable="false"
+            android:longClickable="false"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="选项所在列号（如：B-E或B,C,E-F）">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ques_option_loc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:clickable="false"
+            android:longClickable="false"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Chips can be declared here, or added dynamically. -->
+
+    </com.google.android.material.chip.ChipGroup>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="有选项位于一列中？" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="选项的分隔符（如：|）">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ques_option_split"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:clickable="false"
+                android:longClickable="false"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="答案所在列号（如：F）-自动去除答案内非A-Z字母">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ques_ans_loc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:clickable="false"
+            android:longClickable="false"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="答案字符替换-键值对格式(json)-要求判断题答案为Y或N">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ques_ans_replace"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ans_replace_pre"
+            android:focusable="false"
+            android:clickable="false"
+            android:longClickable="false"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="解析所在列号（如：F）">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ques_explain_loc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:clickable="false"
+            android:longClickable="false"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="预览前三题的解析效果" />
+
+
+</LinearLayout>

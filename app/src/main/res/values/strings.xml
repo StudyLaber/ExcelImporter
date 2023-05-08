@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Excel题库导入器</string>
+    <string name="ans_replace_pre">{
+    "√": "Y",
+    "对": "Y",
+    "正确": "Y",
+    "错": "N",
+    "错误": "N",
+    "×": "N"
+  }</string>
+</resources>
