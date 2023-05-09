@@ -22,9 +22,6 @@
             android:id="@+id/ques_start_num"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusable="false"
-            android:clickable="false"
-            android:longClickable="false"
             />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -39,9 +36,6 @@
             android:id="@+id/ques_title_loc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusable="false"
-            android:clickable="false"
-            android:longClickable="false"
             />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -56,9 +50,6 @@
             android:id="@+id/ques_option_loc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusable="false"
-            android:clickable="false"
-            android:longClickable="false"
             />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -90,9 +81,6 @@
                 android:id="@+id/ques_option_split"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:focusable="false"
-                android:clickable="false"
-                android:longClickable="false"
                 />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -108,9 +96,6 @@
             android:id="@+id/ques_ans_loc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusable="false"
-            android:clickable="false"
-            android:longClickable="false"
             />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -126,9 +111,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/ans_replace_pre"
-            android:focusable="false"
-            android:clickable="false"
-            android:longClickable="false"
             />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -143,9 +125,6 @@
             android:id="@+id/ques_explain_loc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusable="false"
-            android:clickable="false"
-            android:longClickable="false"
             />
 
     </com.google.android.material.textfield.TextInputLayout>

@@ -4,7 +4,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.allViews
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.snackbar.Snackbar
@@ -62,9 +64,22 @@ class MainActivity : PeanutActivity() {
                 selectedWorkBook?.let { workbook: Workbook ->
                     runOnUiThread{
                         chipGroup.removeAllViews()
-                        for (s in workbook.sheetIterator()){
+                        for ((i, s) in workbook.sheetIterator().withIndex()){
                             val chip = layoutInflater.inflate(R.layout.filter_chip, chipGroup, false) as Chip
                             chip.text = s.sheetName
+                            chip.setOnCheckedChangeListener { _, isChecked ->
+                                val root = findViewById<LinearLayout>(R.id.config_view_layout)
+                                if (isChecked){
+                                    root.addView(ConfigView(this).apply { this.sheetID = i;this.sheetName = s.sheetName })
+                                }else{
+                                    for (a in root.allViews){
+                                        if (a is ConfigView && a.sheetID == i) {
+                                            root.removeView(a)
+                                            break
+                                        }
+                                    }
+                                }
+                            }
                             chipGroup.addView(chip)
                         }
                     }

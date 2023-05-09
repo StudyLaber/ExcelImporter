@@ -1,5 +1,6 @@
 package com.peanut.exercise.excel
 
+import android.companion.DeviceNotAssociatedException
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -11,7 +12,11 @@ import org.json.JSONObject
 class ConfigView: FrameLayout {
     var sheetID: Int = -1
     var sheetName: String = ""
-    private lateinit var binding: ConfigViewBinding
+        set(value) {
+            field = value
+            binding.sheetName.text = value
+        }
+    private var binding: ConfigViewBinding
 
     constructor(context: Context) : this(context, null)
 
@@ -27,16 +32,19 @@ class ConfigView: FrameLayout {
         //起始行
         try {
             result.put("start", binding.quesStartNum.text.toString().toInt())
+            binding.quesStartNumLayout.error = null
         }catch (e:Exception){
             binding.quesStartNumLayout.error = e.localizedMessage
             return
         }
         //题目列
         try {
-            val a = binding.quesTitleLoc.text.toString()[0].uppercaseChar()
-            if (a !in 'A'..'Z')
+            val a = binding.quesTitleLoc.text.toString()
+            this.assert(a.length == 1){ "length must be 1" }
+            if (a[0] !in 'A'..'Z')
                 throw Exception("必须是A-Z中的一个。")
-            result.put("topic", a - 'A')
+            result.put("topic", a[0] - 'A')
+            binding.quesTitleLocLayout.error = null
         }catch (e:Exception){
             binding.quesTitleLocLayout.error = e.localizedMessage
             return
@@ -46,6 +54,7 @@ class ConfigView: FrameLayout {
             val a = binding.quesOptionLoc.text.toString().uppercase()
             //A,B,C-D
             result.put("list", string2List(a))
+            binding.quesOptionLocLayout.error = null
         }catch (e:Exception){
             binding.quesOptionLocLayout.error = e.localizedMessage
             return
@@ -57,6 +66,7 @@ class ConfigView: FrameLayout {
                 a = binding.quesOptionSplit.text.toString()
             }
             result.put("list_separator", a)
+            binding.quesOptionSplitLayout.error = null
         }catch (e:Exception){
             binding.quesOptionSplitLayout.error = e.localizedMessage
             return
@@ -67,6 +77,7 @@ class ConfigView: FrameLayout {
             if (a !in 'A'..'Z')
                 throw Exception("必须是A-Z中的一个。")
             result.put("ans", a - 'A')
+            binding.quesAnsLocLayout.error = null
         }catch (e:Exception){
             binding.quesAnsLocLayout.error = e.localizedMessage
             return
@@ -75,6 +86,7 @@ class ConfigView: FrameLayout {
         try {
             val a = JSONObject(binding.quesAnsReplace.text.toString())
             result.put("answerTranslate", a)
+            binding.quesAnsReplaceLayout.error = null
         }catch (e:Exception){
             binding.quesAnsReplaceLayout.error = "Json格式不合法，请百度或者仔细看默认值的格式"
             return
@@ -85,6 +97,7 @@ class ConfigView: FrameLayout {
             if (a !in 'A'..'Z')
                 throw Exception("必须是A-Z中的一个。")
             result.put("explain", a - 'A')
+            binding.quesExplainLocLayout.error = null
         }catch (e:Exception){
             binding.quesExplainLocLayout.error = e.localizedMessage
             return
@@ -108,6 +121,13 @@ class ConfigView: FrameLayout {
                 1 -> this.add(p[0][0] - 'A')
                 else -> throw Exception("范围不合法${s}。")
             }
+        }
+    }
+
+    inline fun assert(value: Boolean, lazyMessage: () -> String) {
+        if (!value) {
+            val message = lazyMessage()
+            throw Exception(message)
         }
     }
 
