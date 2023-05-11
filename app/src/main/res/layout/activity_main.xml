@@ -73,7 +73,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+
         </LinearLayout>
+
+        <Button
+            android:id="@+id/parsing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="开始解析" />
 
 
     </LinearLayout>

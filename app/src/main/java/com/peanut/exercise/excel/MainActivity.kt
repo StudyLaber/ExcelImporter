@@ -4,15 +4,19 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.allViews
+import androidx.core.view.children
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import org.apache.poi.ss.usermodel.Workbook
+import org.json.JSONObject
 import kotlin.concurrent.thread
 
 class MainActivity : PeanutActivity() {
@@ -39,6 +43,7 @@ class MainActivity : PeanutActivity() {
 
     private fun parseSelectedFile(it: View, uri: Uri?){
         val (name, size) = FileCompat.getFileNameAndSize(this, uri)
+        val destination = this@MainActivity.getExternalFilesDir("excel_temp").toString() + "/$name"
         if (size <= 0)
             Snackbar.make(it, "文件大小为0，读取错误。", Snackbar.LENGTH_SHORT).show()
         else if (!name.endsWith(".xls", true) && !name.endsWith(".xlsx", true))
@@ -53,9 +58,8 @@ class MainActivity : PeanutActivity() {
                     chipGroup.removeAllViews()
                     chipGroup.addView(TextView(this).apply { this.text = "请稍等，正在解析Excel文件。" })
                 }
-                val destination = this@MainActivity.getExternalFilesDir("excel_temp").toString() + "/$name"
                 FileCompat.copyFile(selectedUri!!, destination, this@MainActivity)
-                selectedWorkBook = ExcelUnit.getReadWorkBookType(destination){ err ->
+                selectedWorkBook = ExcelParser.getReadWorkBookType(destination){ err ->
                     Snackbar.make(it, err, Snackbar.LENGTH_SHORT).show()
                     runOnUiThread {
                         chipGroup.removeAllViews()
@@ -84,6 +88,23 @@ class MainActivity : PeanutActivity() {
                         }
                     }
                 }
+            }
+        }
+        findViewById<Button>(R.id.parsing).setOnClickListener {
+            thread {
+                val q = Question(this)
+                for (v in findViewById<LinearLayout>(R.id.config_view_layout).children){
+                    if (v is ConfigView){
+                        var c: JSONObject? = null
+                        runOnUiThread { v.getConfig { c = it } }
+                        selectedWorkBook?.let {workbook->
+                            ExcelParser.parse(cfg = c!!, workbook = workbook){question->
+                                q.save(question)
+                            }
+                        }
+                    }
+                }
+                Snackbar.make(it, "共解析${q.getNumber()}题", Snackbar.LENGTH_SHORT).setAction("OK"){}.show()
             }
         }
     }

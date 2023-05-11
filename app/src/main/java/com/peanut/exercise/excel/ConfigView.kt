@@ -1,10 +1,8 @@
 package com.peanut.exercise.excel
 
-import android.companion.DeviceNotAssociatedException
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.FrameLayout
 import com.peanut.exercise.excel.databinding.ConfigViewBinding
 import org.json.JSONObject
@@ -29,6 +27,9 @@ class ConfigView: FrameLayout {
 
     fun getConfig(onSuccess:(JSONObject)->Unit){
         val result = JSONObject()
+        //sheet
+        result.put("sheet", sheetID)
+        result.put("sheetName", sheetName)
         //起始行
         try {
             result.put("start", binding.quesStartNum.text.toString().toInt())
@@ -40,7 +41,7 @@ class ConfigView: FrameLayout {
         //题目列
         try {
             val a = binding.quesTitleLoc.text.toString()
-            this.assert(a.length == 1){ "length must be 1" }
+            ConfigView.assert(a.length == 1){ "length must be 1" }
             if (a[0] !in 'A'..'Z')
                 throw Exception("必须是A-Z中的一个。")
             result.put("topic", a[0] - 'A')
@@ -124,10 +125,12 @@ class ConfigView: FrameLayout {
         }
     }
 
-    inline fun assert(value: Boolean, lazyMessage: () -> String) {
-        if (!value) {
-            val message = lazyMessage()
-            throw Exception(message)
+    companion object {
+        inline fun assert(value: Boolean, lazyMessage: () -> String) {
+            if (!value) {
+                val message = lazyMessage()
+                throw Exception(message)
+            }
         }
     }
 
