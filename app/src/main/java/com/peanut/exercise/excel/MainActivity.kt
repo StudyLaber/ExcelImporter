@@ -3,6 +3,8 @@ package com.peanut.exercise.excel
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
@@ -16,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import org.apache.poi.ss.usermodel.Workbook
+import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.concurrent.thread
 
@@ -38,6 +41,10 @@ class MainActivity : PeanutActivity() {
             fileChooser { _: Int, data: Intent? ->
                 parseSelectedFile(it, data?.data)
             }
+        }
+        findViewById<TextView>(R.id.github).apply {
+            text = Html.fromHtml(getString(R.string.github_repo))
+            movementMethod = LinkMovementMethod.getInstance()
         }
     }
 
@@ -74,7 +81,26 @@ class MainActivity : PeanutActivity() {
                             chip.setOnCheckedChangeListener { _, isChecked ->
                                 val root = findViewById<LinearLayout>(R.id.config_view_layout)
                                 if (isChecked){
-                                    root.addView(ConfigView(this).apply { this.sheetID = i;this.sheetName = s.sheetName })
+                                    root.addView(ConfigView(this).apply {
+                                        sheetID = i
+                                        sheetName = s.sheetName
+                                        onPreview = { testCfg ->
+                                            var testID = 0
+                                            val r = JSONArray()
+                                            try {
+                                                selectedWorkBook?.let {workbook->
+                                                    ExcelParser.parse(cfg = testCfg, workbook = workbook){question->
+                                                        r.put(question)
+                                                        testID++<3
+                                                    }
+                                                }
+                                            }catch (e:Exception){
+                                                if (testID != 0){
+                                                    //发送几题到preview activity
+                                                }else Toast.makeText(this@MainActivity, "出错了，可能是配置或题目有问题。${e.localizedMessage}", Toast.LENGTH_LONG).show()
+                                            }
+                                        }
+                                    })
                                 }else{
                                     for (a in root.allViews){
                                         if (a is ConfigView && a.sheetID == i) {

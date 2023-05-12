@@ -8,5 +8,10 @@
             \"错误\": \"N\",
             \"×\": \"N\"
         }"""
-        </string>
+    </string>
+    <string name="github_repo">
+    <![CDATA[
+        <a href="https://github.com/StudyLaber/ExcelImporter/issues">提建议、获得帮助或完善本软件</a>
+    ]]>
+    </string>
 </resources>

@@ -14,6 +14,7 @@ class ConfigView: FrameLayout {
             field = value
             binding.sheetName.text = value
         }
+    var onPreview: ((cfg: JSONObject) ->Unit)? = null
     private var binding: ConfigViewBinding
 
     constructor(context: Context) : this(context, null)
@@ -108,7 +109,7 @@ class ConfigView: FrameLayout {
 
     private fun preview(){
         this.getConfig { cfg ->
-            println(cfg)
+            onPreview?.invoke(cfg)
         }
     }
 
