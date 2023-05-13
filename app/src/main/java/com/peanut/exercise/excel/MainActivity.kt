@@ -87,17 +87,20 @@ class MainActivity : PeanutActivity() {
                                         onPreview = { testCfg ->
                                             var testID = 0
                                             val r = JSONArray()
-                                            try {
-                                                selectedWorkBook?.let {workbook->
-                                                    ExcelParser.parse(cfg = testCfg, workbook = workbook){question->
+                                            selectedWorkBook?.let { workbook ->
+                                                try {
+                                                    ExcelParser.parse(cfg = testCfg, workbook = workbook) { question ->
                                                         r.put(question)
-                                                        testID++<3
+                                                        testID++ < 3
                                                     }
+                                                } catch (e: Exception) {
+                                                    if (testID != 0) {
+                                                        //发送几题到preview activity
+                                                        startActivity(Intent(this@MainActivity, PreviewActivity::class.java).apply {
+                                                            putExtra("JSON", r.toString())
+                                                        })
+                                                    } else Toast.makeText(this@MainActivity, "出错了，可能是配置或题目有问题。${e.localizedMessage}", Toast.LENGTH_LONG).show()
                                                 }
-                                            }catch (e:Exception){
-                                                if (testID != 0){
-                                                    //发送几题到preview activity
-                                                }else Toast.makeText(this@MainActivity, "出错了，可能是配置或题目有问题。${e.localizedMessage}", Toast.LENGTH_LONG).show()
                                             }
                                         }
                                     })

@@ -95,10 +95,15 @@ class ConfigView: FrameLayout {
         }
         //解析列
         try {
-            val a = binding.quesExplainLoc.text.toString()[0].uppercaseChar()
-            if (a !in 'A'..'Z')
-                throw Exception("必须是A-Z中的一个。")
-            result.put("explain", a - 'A')
+            val a = binding.quesExplainLoc.text.toString()
+            if (a.isEmpty()){
+                result.put("explain", -1)
+            }else{
+                val b = a[0].uppercaseChar()
+                if (b !in 'A'..'Z')
+                    throw Exception("必须是A-Z中的一个。")
+                result.put("explain", b - 'A')
+            }
             binding.quesExplainLocLayout.error = null
         }catch (e:Exception){
             binding.quesExplainLocLayout.error = e.localizedMessage
@@ -130,7 +135,7 @@ class ConfigView: FrameLayout {
         inline fun assert(value: Boolean, lazyMessage: () -> String) {
             if (!value) {
                 val message = lazyMessage()
-                throw Exception(message)
+                throw java.lang.IllegalStateException(message)
             }
         }
     }

@@ -26,7 +26,7 @@ object ExcelParser {
             if (topic.cellValue().isBlank())
                 return@forEach
             val explain = if (cfg.getInt("explain") > 0) row.getCell(cfg.getInt("explain"))?.cellValue()?:"" else ""
-            val (options_, _) = row.getCells(JSONArrayIntIterator(cfg.getJSONArray("list")), workbook, separator = cfg.getString("list_separator"))
+            val (options_, _) = row.getCells(cfg.get("list") as List<Int>, workbook, separator = cfg.getString("list_separator"))
             val ans = if (cfg.getInt("ans") > 0)
                 row.getCell(cfg.getInt("ans")).cellValue().translate(answerTranslation).characterOnly()
             else ""
@@ -64,17 +64,11 @@ object ExcelParser {
     private fun Sheet.forEach(start: Int = 0, callback: (row: Row) -> Unit) {
         this.forEachIndexed { index, row ->
             if (index >= start)
-                try {
-                    callback.invoke(row)
-                }catch (e:Exception){
-                    println(row.joinToString())
-                    e.printStackTrace()
-                    exitProcess(-1)
-                }
+                callback.invoke(row)
         }
     }
 
-    private fun Row.getCells(jsonArray: JSONArrayIntIterator, workbook: Workbook, separator: String):
+    private fun Row.getCells(jsonArray: List<Int>, workbook: Workbook, separator: String):
             Pair<MutableList<String>, MutableList<Short>> {
         val optionList = mutableListOf<String>()
         val optionListColor = mutableListOf<Short>()
