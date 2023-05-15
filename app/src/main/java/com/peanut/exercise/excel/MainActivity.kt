@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.FileProvider
 import androidx.core.view.allViews
 import androidx.core.view.children
 import com.google.android.material.chip.Chip
@@ -20,6 +21,8 @@ import com.google.android.material.textfield.TextInputLayout
 import org.apache.poi.ss.usermodel.Workbook
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
+import java.util.*
 import kotlin.concurrent.thread
 
 class MainActivity : PeanutActivity() {
@@ -120,20 +123,40 @@ class MainActivity : PeanutActivity() {
             }
         }
         findViewById<Button>(R.id.parsing).setOnClickListener {
+            val q = Question(this)
+            val cfgs = mutableListOf<JSONObject>()
+            for (v in findViewById<LinearLayout>(R.id.config_view_layout).children){
+                if (v is ConfigView) {
+                    v.getConfig{ cfgs.add(it) }
+                }
+            }
             thread {
-                val q = Question(this)
-                for (v in findViewById<LinearLayout>(R.id.config_view_layout).children){
-                    if (v is ConfigView){
-                        var c: JSONObject? = null
-                        runOnUiThread { v.getConfig { c = it } }
-                        selectedWorkBook?.let {workbook->
-                            ExcelParser.parse(cfg = c!!, workbook = workbook){question->
-                                q.save(question)
-                            }
+                for(cfg in cfgs){
+                    selectedWorkBook?.let {workbook->
+                        ExcelParser.parse(cfg = cfg, workbook = workbook){question->
+                            q.save(question)
                         }
                     }
                 }
-                Snackbar.make(it, "共解析${q.getNumber()}题", Snackbar.LENGTH_SHORT).setAction("OK"){}.show()
+                runOnUiThread {
+                    Snackbar.make(it, "共解析${q.getNumber()}题", Snackbar.LENGTH_INDEFINITE).setAction("保存"){
+                        val sharedUri = FileProvider.getUriForFile(this@MainActivity, this.packageName, File(Objects.requireNonNull(this@MainActivity.getExternalFilesDir("Database")).toString() + "/parse.db"))
+                        try {
+                            startActivity(
+                                Intent().setClassName(
+                                    "com.peanut.exercise",
+                                    "com.peanut.exercise.activities.io.ImportDBActivity"
+                                ).setData(sharedUri).addFlags(
+                                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                            or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                                )
+                            )
+                        } catch (e: Exception) {
+                            Toast.makeText(this, e.localizedMessage, Toast.LENGTH_LONG).show()
+                            e.printStackTrace()
+                        }
+                    }.show()
+                }
             }
         }
     }
