@@ -3,6 +3,9 @@ package com.peanut.exercise.excel
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
+import android.os.Environment
+import android.provider.Settings
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -46,8 +49,19 @@ open class PeanutActivity : AppCompatActivity() {
 
     fun requestPermissions(permissions:Array<String>,func:(permissions: Array<out String>, grantResults: IntArray)->Unit){
         val requestCode: Int = (Math.random()*Int.MAX_VALUE).toInt() and 0x7fff
-        onRequestPermissionsResultListener.add(requestCode to func)
-        ActivityCompat.requestPermissions(this, permissions, requestCode)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (Environment.isExternalStorageManager()) {
+                func(permissions, IntArray(permissions.size){PackageManager.PERMISSION_GRANTED})
+            }else {
+                onRequestPermissionsResultListener.add(requestCode to func)
+                startActivity(Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION))
+            }
+        }else if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            onRequestPermissionsResultListener.add(requestCode to func)
+            ActivityCompat.requestPermissions(this, permissions, requestCode)
+        }else{
+            func(permissions, IntArray(permissions.size){PackageManager.PERMISSION_GRANTED})
+        }
     }
 
     fun callActivity(intent: Intent,func:(resultCode:Int, data:Intent?)->Unit){
