@@ -3,6 +3,7 @@ package com.peanut.exercise.excel
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.Settings
@@ -53,8 +54,12 @@ open class PeanutActivity : AppCompatActivity() {
             if (Environment.isExternalStorageManager()) {
                 func(permissions, IntArray(permissions.size){PackageManager.PERMISSION_GRANTED})
             }else {
-                onRequestPermissionsResultListener.add(requestCode to func)
-                startActivity(Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION))
+                onActivityResultListener.add(requestCode to { _:Int, _:Intent?->
+                    if (Environment.isExternalStorageManager()) {
+                        func(permissions, IntArray(permissions.size){PackageManager.PERMISSION_GRANTED})
+                    }
+                })
+                startActivityForResult(Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION).apply { data = Uri.parse("package:$packageName") }, requestCode)
             }
         }else if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             onRequestPermissionsResultListener.add(requestCode to func)
