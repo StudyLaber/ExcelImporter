@@ -59,7 +59,7 @@ open class PeanutActivity : AppCompatActivity() {
                         func(permissions, IntArray(permissions.size){PackageManager.PERMISSION_GRANTED})
                     }
                 })
-                startActivityForResult(Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION).apply { data = Uri.parse("package:$packageName") }, requestCode)
+                startActivityForResult(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply { data = Uri.parse("package:${BuildConfig.APPLICATION_ID}") }, requestCode)
             }
         }else if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             onRequestPermissionsResultListener.add(requestCode to func)
