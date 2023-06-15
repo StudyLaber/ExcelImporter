@@ -39,7 +39,8 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       run: ./gradlew app:clean app:aR
     - name: Mirror Release
-      run: ｜
+      if: startsWith(github.ref, 'refs/tags/')
+      run: |
         python Client.py --key=${{ secrets.KEY }} --repo=${{ secrets.REPO }} --host=${{ secrets.HOST }} --release=app/build/outputs/apk/release/app-release.apk
         python Client.py --key=${{ secrets.KEY }} --repo=${{ secrets.REPO }} --host=${{ secrets.HOST }} --release=app/build/outputs/apk/release/output-metadata.json
     - name: Upload
