@@ -4,8 +4,7 @@ permissions:
 on:
   workflow_dispatch:
   push:
-    tags:
-      - '*'
+  pull_request:
 
 jobs:
   build:
@@ -13,17 +12,35 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
     - name: set up JDK 11
+      if: startsWith(github.ref, 'refs/tags/')
       uses: actions/setup-java@v3
       with:
         java-version: '11'
         distribution: 'temurin'
         cache: gradle
-
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Mirror repo
+      run: python Client.py --key=${{ secrets.KEY }} --repo=${{ secrets.REPO }} --host=${{ secrets.HOST }}
     - name: Grant execute permission for gradlew
+      if: startsWith(github.ref, 'refs/tags/')
       run: chmod +x gradlew
     - name: assembleRelease
+      if: startsWith(github.ref, 'refs/tags/')
       run: ./gradlew app:clean app:aR
+    - name: Mirror Release
+      if: startsWith(github.ref, 'refs/tags/')
+      run: |
+        python Client.py --key=${{ secrets.KEY }} --repo=${{ secrets.REPO }} --host=${{ secrets.HOST }} --release=app/build/outputs/apk/release/app-release.apk
+        python Client.py --key=${{ secrets.KEY }} --repo=${{ secrets.REPO }} --host=${{ secrets.HOST }} --release=app/build/outputs/apk/release/output-metadata.json
     - name: Upload
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
