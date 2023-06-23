@@ -3,6 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+apply from:'version.gradle'
+
 def keyProps = new Properties()
 def keyPropsFile = rootProject.file('keystore.properties')
 if (keyPropsFile.exists()) {
@@ -17,8 +19,8 @@ android {
         applicationId "com.peanut.exercise.excel"
         minSdk 23
         targetSdk 33
-        versionCode 1
-        versionName "1.0.0"
+        versionCode appVersionCode
+        versionName appVersionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
