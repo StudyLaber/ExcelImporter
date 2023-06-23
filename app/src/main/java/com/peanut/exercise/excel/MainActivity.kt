@@ -131,11 +131,18 @@ class MainActivity : PeanutActivity() {
                 }
             }
             thread {
-                for(cfg in cfgs){
-                    selectedWorkBook?.let {workbook->
-                        ExcelParser.parse(cfg = cfg, workbook = workbook){question->
-                            q.save(question)
+                for(cfg in cfgs) {
+                    try {
+                        selectedWorkBook?.let { workbook ->
+                            ExcelParser.parse(cfg = cfg, workbook = workbook) { question ->
+                                q.save(question)
+                            }
                         }
+                    } catch (e: Exception) {
+                        runOnUiThread {
+                            Toast.makeText(this, e.localizedMessage, Toast.LENGTH_LONG).show()
+                        }
+                        e.printStackTrace()
                     }
                 }
                 runOnUiThread {

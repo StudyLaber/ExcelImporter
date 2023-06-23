@@ -21,15 +21,22 @@ object ExcelParser {
             answerTranslation.add(key to value)
         }
         val chapter = if (cfg.has("chapter")) cfg.getString("chapter") else ""
+        var skip = 0
         workbook.getSheetAt(cfg.getInt("sheet")).forEach(start = cfg.getInt("start")-1) { row: Row ->
-            val topic = row.getCell(cfg.getInt("topic")) ?: return@forEach
-            if (topic.cellValue().isBlank())
+            val topic = row.getCellSafety(cfg.getInt("topic"))
+            if (topic == null){
+                skip++
                 return@forEach
-            val explain = if (cfg.getInt("explain") > 0) row.getCell(cfg.getInt("explain"))?.cellValue()?:"" else ""
+            }
+            val explain = if (cfg.getInt("explain") > 0) row.getCellSafety(cfg.getInt("explain"))?.cellValue()?:"" else ""
             val (options_, _) = row.getCells(cfg.get("list") as List<Int>, workbook, separator = cfg.getString("list_separator"))
             val ans = if (cfg.getInt("ans") > 0)
-                row.getCell(cfg.getInt("ans")).cellValue().translate(answerTranslation).characterOnly()
+                row.getCellSafety(cfg.getInt("ans"))?.cellValue()?.translate(answerTranslation)?.characterOnly()
             else ""
+            if (ans == null) {
+                skip++
+                ans ?: return@forEach
+            }
             val options = JSONArray(options_)
             val realAns = if (options.length() > 0) ans else ans.replace("A", "Y").replace("B", "N")
             ConfigView.assert(onParse(JSONObject().also { question ->
@@ -40,6 +47,9 @@ object ExcelParser {
                 question.put("Options", options)
                 question.put("Type", getType(realAns, options))
             })){"无法保存解析结果。"}
+        }
+        if (skip > 0){
+            throw java.lang.IllegalStateException("提示：有${skip}题因为缺少题目或者答案而被跳过。")
         }
     }
 
@@ -68,13 +78,21 @@ object ExcelParser {
         }
     }
 
+    private fun Row.getCellSafety(i:Int):Cell?{
+        return try {
+            this.getCell(i, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL)
+        }catch (e:java.lang.Exception){
+            null
+        }
+    }
+
     private fun Row.getCells(jsonArray: List<Int>, workbook: Workbook, separator: String):
             Pair<MutableList<String>, MutableList<Short>> {
         val optionList = mutableListOf<String>()
         val optionListColor = mutableListOf<Short>()
         for (i in jsonArray) {
-            val color = this.getCell(i)?.cellStyle?.fontIndex?.let { workbook.getFontAt(it).color }
-            val value = this.getCell(i)?.cellValue() ?: ""
+            val color = this.getCellSafety(i)?.cellStyle?.fontIndex?.let { workbook.getFontAt(it).color }
+            val value = this.getCellSafety(i)?.cellValue() ?: ""
             if (value.isNotEmpty())
                 if (separator.isNotEmpty()) {
                     for (v in value.split(separator)) {
